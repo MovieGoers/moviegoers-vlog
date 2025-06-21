@@ -4,26 +4,30 @@ import { formatDate, getBlogPosts } from '@/app/blog/utils'
 import { baseUrl } from '@/app/sitemap'
 
 export async function generateStaticParams() {
-  let posts = getBlogPosts()
+  // 'posts' is never reassigned, so use const
+  const posts = getBlogPosts()
 
   return posts.map((post) => ({
     slug: post.slug,
   }))
 }
 
-export function generateMetadata({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+export async function generateMetadata({ params }: { params: { slug: string } }) { // Added type annotation for params
+  // 'post' is never reassigned, so use const
+  const post = getBlogPosts().find((p) => p.slug === params.slug) // Changed internal 'post' to 'p' to avoid confusion
   if (!post) {
     return
   }
 
-  let {
+  // All these destructured variables are never reassigned, so use const
+  const {
     title,
     publishedAt: publishedTime,
     summary: description,
     image,
   } = post.metadata
-  let ogImage = image
+  // 'ogImage' is never reassigned, so use const
+  const ogImage = image
     ? image
     : `${baseUrl}/og?title=${encodeURIComponent(title)}`
 
@@ -51,8 +55,9 @@ export function generateMetadata({ params }) {
   }
 }
 
-export default function Blog({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+export default async function Blog({ params }: { params: { slug: string } }) { // Added type annotation for params
+  // 'post' is never reassigned, so use const
+  const post = getBlogPosts().find((p) => p.slug === params.slug) // Changed internal 'post' to 'p' to avoid confusion
 
   if (!post) {
     notFound()
